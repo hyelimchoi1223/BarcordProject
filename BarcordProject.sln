@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMON_Helper", "CIMON_Helpe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeProject", "BarcordProject\BarcordProject\BarcodeProject.csproj", "{81A50527-9AEF-47EF-8AC8-5DD0CA4F8318}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeReader", "BarcodeReader\BarcodeReader.csproj", "{F76045D0-930B-425D-9DFA-8A80BCF869B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{81A50527-9AEF-47EF-8AC8-5DD0CA4F8318}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81A50527-9AEF-47EF-8AC8-5DD0CA4F8318}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81A50527-9AEF-47EF-8AC8-5DD0CA4F8318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F76045D0-930B-425D-9DFA-8A80BCF869B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F76045D0-930B-425D-9DFA-8A80BCF869B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F76045D0-930B-425D-9DFA-8A80BCF869B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F76045D0-930B-425D-9DFA-8A80BCF869B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
