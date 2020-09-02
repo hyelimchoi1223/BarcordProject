@@ -19,10 +19,10 @@ namespace CIMON_Helper
 
         }
 
-        public void CimonXConnection(Object state, EventArgs eventArgs)
+        public bool CimonXConnection(Object state, EventArgs eventArgs)
         {
             // 정상 연결이 된 경우
-            if (bird != null && isCimonXRun()) return;
+            if (bird != null && isCimonXRun()) return true;
 
             // CimonX가 중간에 종료된 경우
             if (bird != null && !isCimonXRun())
@@ -31,7 +31,7 @@ namespace CIMON_Helper
                 bird = null;
 
                 //Program.fmd.frmMainDlg_Load(this, null);
-                return;
+                return false;
             }
 
             // 초기 OLE 연결 설정
@@ -59,11 +59,11 @@ namespace CIMON_Helper
 
                 //Program.fmd.frmMainDlg_Load(this, null);
 
-                return;
+                return false;
             }
 
             bird = null;
-
+            return false;
         }
 
         //-----------------------//
