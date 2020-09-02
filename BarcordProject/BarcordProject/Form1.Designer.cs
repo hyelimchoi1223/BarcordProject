@@ -45,8 +45,12 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.settingtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.sendingtoolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.tableLayoutPanel1.SuspendLayout();
             this.titlePanel.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -147,6 +151,8 @@
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sendingtoolStripProgressBar});
             this.statusStrip1.Location = new System.Drawing.Point(0, 428);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(800, 22);
@@ -156,9 +162,11 @@
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingtoolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(800, 27);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -250,6 +258,20 @@
             this.label8.Text = "label8";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // settingtoolStripButton1
+            // 
+            this.settingtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.settingtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.settingtoolStripButton1.Name = "settingtoolStripButton1";
+            this.settingtoolStripButton1.Size = new System.Drawing.Size(43, 24);
+            this.settingtoolStripButton1.Text = "설정";
+            this.settingtoolStripButton1.Click += new System.EventHandler(this.OnSettingButtonClick);
+            // 
+            // sendingtoolStripProgressBar
+            // 
+            this.sendingtoolStripProgressBar.Name = "sendingtoolStripProgressBar";
+            this.sendingtoolStripProgressBar.Size = new System.Drawing.Size(100, 18);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -264,6 +286,10 @@
             this.tableLayoutPanel1.PerformLayout();
             this.titlePanel.ResumeLayout(false);
             this.titlePanel.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,6 +314,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton settingtoolStripButton1;
+        private System.Windows.Forms.ToolStripProgressBar sendingtoolStripProgressBar;
     }
 }
 
