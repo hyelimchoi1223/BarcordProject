@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,6 +10,9 @@ namespace BarcordProject
 {
     static class Program
     {
+        public static CimonXClass cmx = new CimonXClass();
+        public static Form1 fmd;
+
         /// <summary>
         /// 해당 응용 프로그램의 주 진입점입니다.
         /// </summary>
@@ -17,21 +21,37 @@ namespace BarcordProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-            int count = 0;
-            Task t1 = Task.Run(() => Application.Run(new Form1()));
-            count++;
 
-            if (count == 100)
-                t1.Wait();
+            Process[] viewProcess = Process.GetProcessesByName("CimonX");
 
-            
-            //CimonXClass cimonX = new CimonXClass();
-            //if(cimonX.CimonXConnection(null, null))
-            //{
+            if (viewProcess != null && viewProcess.Length == 1)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
-            //}
-            //Program.Form1.frmMainDlg_Load(this, null);
+                // 주기적으로 CimonX 실행 여부 확인
+                Timer tt = new Timer();
+                tt.Interval = 5000;
+                tt.Tick += new EventHandler(CimonXConnectionCheck);
+                tt.Start();
+
+                fmd = new Form1();
+                Application.Run(fmd);
+            }
+            else
+            {
+                MessageBox.Show("CimonX가 실행되어 있어야 합니다.");
+                Application.Exit();
+            }
+        }
+
+        private static void CimonXConnectionCheck(object sender, EventArgs e)
+        {
+            bool isConnected = cmx.CimonXConnection();
+            if (!isConnected)
+            {
+                fmd.PageLoad(cmx, null);
+            }
         }
     }
 }

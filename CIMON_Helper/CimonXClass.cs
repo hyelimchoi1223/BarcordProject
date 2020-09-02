@@ -19,7 +19,7 @@ namespace CIMON_Helper
 
         }
 
-        public bool CimonXConnection(Object state, EventArgs eventArgs)
+        public bool CimonXConnection()
         {
             // 정상 연결이 된 경우
             if (bird != null && isCimonXRun()) return true;
