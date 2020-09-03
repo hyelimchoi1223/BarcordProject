@@ -39,5 +39,11 @@ namespace BarcordProject
         {
             return info;
         }
+
+        private void textBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            SelectDevicePopupForm popup = new SelectDevicePopupForm();            
+            popup.ShowDialog();            
+        }
     }
 }

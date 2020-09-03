@@ -36,13 +36,15 @@ namespace BarcordProject
                 tt.Start();
 
                 fmd = new Form1();
-                Application.Run(fmd);
+                //Application.Run(fmd);
             }
-            else
-            {
-                MessageBox.Show("CimonX가 실행되어 있어야 합니다.");
-                Application.Exit();
-            }
+            //else
+            //{
+            //    MessageBox.Show("CimonX가 실행되어 있어야 합니다.");
+            //    Application.Exit();
+            //}
+            fmd = new Form1();
+            Application.Run(fmd);
         }
 
         private static void CimonXConnectionCheck(object sender, EventArgs e)
