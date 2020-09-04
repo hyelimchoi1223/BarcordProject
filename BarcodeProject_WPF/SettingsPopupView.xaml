@@ -1,0 +1,14 @@
+﻿<Window x:Class="BarcodeProject_WPF.SettingsPopupView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BarcodeProject_WPF"
+        mc:Ignorable="d"
+        Title="SettingsPopupView" Height="300" Width="300">
+    <Grid>
+        <TextBox x:Name="BarcodeName_TextBox1" HorizontalAlignment="Left" Height="23" Margin="10,40,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" MouseDoubleClick="BarcodeName_TextBox_MouseDoubleClick"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="169,63,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+
+    </Grid>
+</Window>
