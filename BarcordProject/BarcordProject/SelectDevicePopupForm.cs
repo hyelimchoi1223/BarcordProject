@@ -14,7 +14,10 @@ namespace BarcordProject
 {
     public partial class SelectDevicePopupForm : Form
     {
+        public string DeviceName { get; set; }
         private readonly RawInput _rawinput;
+        public delegate void SendDeviceName(string deviceName);
+        public event SendDeviceName SendMsg;
 
         const bool CaptureOnlyInForeground = true;
 
@@ -29,36 +32,23 @@ namespace BarcordProject
             Win32.DeviceAudit();
 
             DataTable table = new DataTable();
-            table.Columns.Add(new DataColumn("Column1"));
-            table.Columns.Add(new DataColumn("Column2"));
+            table.Columns.Add(new DataColumn("DeviceType"));
+            table.Columns.Add(new DataColumn("DeviceName"));
+            table.Columns.Add(new DataColumn("etc"));
 
-            Dictionary<IntPtr, KeyPressEvent> test = RawInput.GetKeyboardDriver().GetDeviceList();
-
-            foreach(var item in test.Keys)
+            Dictionary<IntPtr, KeyPressEvent> devices = RawInput.GetKeyboardDriver().GetDeviceList();
+            foreach (var item in devices.Keys)
             {
-                
+                if (Win32.GetDeviceType(devices[item].DeviceType) != DeviceType.RimTypekeyboard) continue;
+
                 DataRow row = table.NewRow();
-                row["Column1"] = item;
-                row["Column2"] = test[item];
-                
-                if (GetDeviceType(test[item].DeviceType) == DeviceType.RimTypekeyboard)
-                {
-                    table.Rows.Add(row);
-                }
-                
+                row["DeviceType"] = devices[item].DeviceType;
+                row["DeviceName"] = devices[item].DeviceName;
+                row["etc"] = devices[item];
+                table.Rows.Add(row);
             }
-            dataGridView1.DataSource = table;
-        }
 
-        private int GetDeviceType(string deviceType)
-        {            
-            switch (deviceType)
-            {
-                case "MOUSE": return DeviceType.RimTypemouse;
-                case "KEYBOARD": return DeviceType.RimTypekeyboard;
-                case "HID": return DeviceType.RimTypeHid;
-                default: return DeviceType.RimTypedefault;
-            }
+            dataGridView1.DataSource = table;
         }
 
         private static void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e)
@@ -73,5 +63,13 @@ namespace BarcordProject
             Debug.WriteLine("Unhandled Exception: " + ex);
             MessageBox.Show(ex.Message);
         }
-    }
+
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DeviceName = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+            SendMsg(DeviceName);
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }       
+    }    
 }

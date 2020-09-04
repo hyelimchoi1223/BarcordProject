@@ -5,31 +5,32 @@ using System.Runtime.InteropServices;
 
 namespace RawInput_dll
 {
-    public class RawInput : NativeWindow  
+    public class RawInput : NativeWindow
     {
         static RawKeyboard _keyboardDriver;
         readonly IntPtr _devNotifyHandle;
         static readonly Guid DeviceInterfaceHid = new Guid("4D1E55B2-F16F-11CF-88CB-001111000030");
         private PreMessageFilter _filter;
+
         public static RawKeyboard GetKeyboardDriver()
         {
             return _keyboardDriver;
         }
-        public  event RawKeyboard.DeviceEventHandler KeyPressed
+        public event RawKeyboard.DeviceEventHandler KeyPressed
         {
             add { _keyboardDriver.KeyPressed += value; }
-            remove { _keyboardDriver.KeyPressed -= value;}
+            remove { _keyboardDriver.KeyPressed -= value; }
         }
 
         public int NumberOfKeyboards
         {
-            get { return _keyboardDriver.NumberOfKeyboards; } 
+            get { return _keyboardDriver.NumberOfKeyboards; }
         }
-        
+
         public void AddMessageFilter()
         {
             if (null != _filter) return;
-            
+
             _filter = new PreMessageFilter();
             Application.AddMessageFilter(_filter);
         }
@@ -79,7 +80,7 @@ namespace RawInput_dll
             {
                 Debug.Print("Registration for device notifications Failed. Error: {0}", Marshal.GetLastWin32Error());
             }
-            
+
             return usbNotifyHandle;
         }
 
@@ -103,7 +104,7 @@ namespace RawInput_dll
 
             base.WndProc(ref message);
         }
-        
+
         ~RawInput()
         {
             Win32.UnregisterDeviceNotification(_devNotifyHandle);

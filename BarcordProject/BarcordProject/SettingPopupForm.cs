@@ -1,4 +1,5 @@
 ﻿using BarcordProject.Model;
+using BarcordProject.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +29,9 @@ namespace BarcordProject
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+
+            Settings.Default.DeviceName = string.Format("{0}|{1}|{2}|{3}", textBox1.Text, textBox3.Text, textBox5.Text, textBox7.Text);
+            Settings.Default.Save();
             this.Close();
         }
         internal void SetBarcodeInfo(List<BarcodeInfo> values)
@@ -35,15 +39,26 @@ namespace BarcordProject
             info = values;
         }
 
-        internal List<BarcodeInfo> GetBarcodeInfo()
-        {
-            return info;
-        }
-
         private void textBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            SelectDevicePopupForm popup = new SelectDevicePopupForm();            
-            popup.ShowDialog();            
+            TextBox textBox = (TextBox)sender;
+            var popup = new SelectDevicePopupForm();
+            popup.SendMsg += new SelectDevicePopupForm.SendDeviceName(SetDeviceName);
+            DialogResult result = popup.ShowDialog();
+            this.Refresh();
+
+            //SelectDevicePopupForm popup = new SelectDevicePopupForm();            
+            //popup.ShowDialog();
+
+            //if (popup.DialogResult == DialogResult.OK)
+            //{
+                
+            //    popup.Close();
+            //}
+        }
+        void SetDeviceName(string deviceName)
+        {
+            textBox1.Text = deviceName;
         }
     }
 }

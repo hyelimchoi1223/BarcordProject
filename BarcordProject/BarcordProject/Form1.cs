@@ -1,4 +1,5 @@
 ﻿using BarcordProject.Model;
+using BarcordProject.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,15 +19,6 @@ namespace BarcordProject
         {
             InitializeComponent();
             titleLabel.Text = "타이틀 텍스트입니다.";
-            ManagementObjectCollection collection;
-            using (var searcher = new ManagementObjectSearcher(@"Select * From Win32_USBHub"))
-                collection = searcher.Get();
-
-            List<ManagementObject> list = new List<ManagementObject>();
-            foreach (ManagementObject item in collection)
-            {
-                list.Add(item);
-            }
         }
 
         public void SetTestText(string value)
@@ -42,8 +34,12 @@ namespace BarcordProject
             popup.ShowDialog();
             if (popup.DialogResult == DialogResult.OK)
             {
-                popup.GetBarcodeInfo();
-            }
+                string[] devices = Settings.Default.DeviceName.Split('|');
+                label1.Text = devices[0];
+                label2.Text = devices[1];
+                label3.Text = devices[2];
+                label4.Text = devices[3];
+            }            
         }
 
         public void PageLoad(object sender, EventArgs e)
@@ -58,6 +54,11 @@ namespace BarcordProject
             {
                 string test = control.Text;
             }
+        }
+
+        private void barcordRead_textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
         }
     }
 }
