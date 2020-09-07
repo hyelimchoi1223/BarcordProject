@@ -23,16 +23,49 @@ namespace BarcodeProject_WPF
         public MainWindow()
         {
             InitializeComponent();
+            if (!GetSettingInitialize())
+                ShowSettingPopup();
+
+        }
+
+        private void ShowSettingPopup()
+        {
+            SettingPopupWindow settingPopup = new SettingPopupWindow();
+            settingPopup.ShowDialog();
+            if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
+            {
+                GetSettingInitialize();
+            }
+        }
+
+        private bool GetSettingInitialize()
+        {
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.DeviceName) || string.IsNullOrWhiteSpace(Properties.Settings.Default.TagName))
+                return false;
+
+            char separator = Properties.Settings.Default.Separator;
+            List<string> devices = Properties.Settings.Default.DeviceName.Split(separator).ToList();
+            SetControlValueBinding(typeof(Label), "DeviceName_Label", devices);
+            List<string> tags = Properties.Settings.Default.TagName.Split(separator).ToList();
+            SetControlValueBinding(typeof(Label), "TagName_Label", tags);
+            return true;
+        }
+
+        private void SetControlValueBinding(Type type, string controlName, List<string> values)
+        {
+            if (type == typeof(Label))
+            {
+                for (int i = 0; i < values.Count; i++)
+                {
+                    Label control = (Label)this.FindName(string.Format("{0}{1}", controlName, i + 1));
+                    control.Content = values[i];
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SettingPopupWindow settingPopup = new SettingPopupWindow();
-            settingPopup.ShowDialog();
-            if(settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
-            {
-                DeviceName_Label1.Content = settingPopup.test;
-            }
+            ShowSettingPopup();
         }
     }
 }

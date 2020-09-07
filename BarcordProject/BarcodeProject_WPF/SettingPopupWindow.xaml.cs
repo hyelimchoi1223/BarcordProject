@@ -27,9 +27,41 @@ namespace BarcodeProject_WPF
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            test = DeviceName_TextBox1.Text;
+            Properties.Settings.Default.DeviceName = GetControlValue(typeof(TextBox), "DeviceName_TextBox");
+            Properties.Settings.Default.TagName = GetControlValue(typeof(TextBox), "TagName_TextBox");
+            Properties.Settings.Default.Save();
             this.DialogResult = true;
             this.Close();
+        }
+
+        private string GetControlValue(Type type, string controlName)
+        {
+            string values = string.Empty;
+            char separator = Properties.Settings.Default.Separator;
+            if (type == typeof(TextBox))
+            {
+                for (int i = 1; i <= 4; i++)
+                {
+                    TextBox control = (TextBox)this.FindName(string.Format("{0}{1}", controlName, i + 1));
+                    values += control.Text;
+                    if(i != 4)
+                        values += separator;
+                }
+            }
+
+            return values;
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeviceName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox control = (TextBox)sender;
+
+            control.Text = "devicename";
         }
     }
 }
