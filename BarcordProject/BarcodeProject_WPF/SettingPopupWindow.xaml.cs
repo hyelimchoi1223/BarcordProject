@@ -54,14 +54,19 @@ namespace BarcodeProject_WPF
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
 
         private void DeviceName_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             TextBox control = (TextBox)sender;
 
-            control.Text = "devicename";
+            SelectDevicePopupWindow settingPopup = new SelectDevicePopupWindow();
+            settingPopup.ShowDialog();
+            if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
+            {
+                
+            }
         }
     }
 }
