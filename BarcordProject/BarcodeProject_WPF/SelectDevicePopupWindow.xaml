@@ -10,8 +10,8 @@
         <DataGrid x:Name="DeviceGrid" Margin="10,10,9.6,10.4" MouseDoubleClick="DeviceGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="DeviceType" Binding="{Binding Path=DeviceType}"/>
-                <DataGridTextColumn Header="DeviceType" Binding="{Binding Path=DeviceName}"/>
-                <DataGridTextColumn Header="DeviceType" Binding="{Binding Path=etc}"/>
+                <DataGridTextColumn Header="DeviceName" Binding="{Binding Path=DeviceName}"/>
+                <DataGridTextColumn Header="etc" Binding="{Binding Path=etc}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

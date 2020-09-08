@@ -1,5 +1,7 @@
-﻿using System;
+﻿using RawInput_dll;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -20,12 +23,82 @@ namespace BarcodeProject_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private RawInput _rawinput;
+        const bool CaptureOnlyInForeground = true;
+        const string DeviceLabelName = "DeviceName_Label";
+        const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
+
+
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+          
             if (!GetSettingInitialize())
                 ShowSettingPopup();
+        }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            // I am new to WPF and I don't know where else to call this function.
+            // It has to be called after the window is created or the handle won't
+            // exist yet and the function will throw an exception.
+            IntPtr hwnd = IntPtr.Zero;
+            Window myWin = Application.Current.MainWindow;
+            try
+            {
+                hwnd = new WindowInteropHelper(myWin).Handle;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Initialized Exception: " + ex.Message);
+            }
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            _rawinput = new RawInput(hwnd, CaptureOnlyInForeground);
+            _rawinput.AddMessageFilter();   // Adding a message filter will cause keypresses to be handled
+            Win32.DeviceAudit();
+
+            _rawinput.KeyPressed += OnKeyPressed;
+
+            base.OnSourceInitialized(e);
+        }
+
+        public void OnKeyPressed(object sender, RawInputEventArg e)
+        {
+            int controlIndex = GetLabelIndex(e.KeyPressEvent.DeviceName);
+            if (controlIndex == -1) throw new Exception("이 장비는 등록된 장비가 아닙니다.");
+            FocusTextBox(controlIndex);            
+        }
+
+        private void FocusTextBox(int controlIndex)
+        {
+            TextBox real = (TextBox)this.FindName(string.Format("{0}{1}", BarcodeValueTextBoxName, controlIndex));
+            real.Focus();
+        }
+
+        private int GetLabelIndex(string deviceName)
+        {
+            for (int i = 1; i <= 4; i++)
+            {
+                Label control = (Label)this.FindName(string.Format("{0}{1}", DeviceLabelName, i));
+                if (control.Content.Equals(deviceName))
+                    return i;
+            }
+            return -1;
+        }
+
+        private static void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+
+            if (null == ex) return;
+
+            // Log this error. Logging the exception doesn't correct the problem but at least now
+            // you may have more insight as to why the exception is being thrown.
+            Debug.WriteLine("Unhandled Exception: " + ex.Message);
+            Debug.WriteLine("Unhandled Exception: " + ex);
+            MessageBox.Show(ex.Message);
         }
 
         private void ShowSettingPopup()
@@ -66,6 +139,11 @@ namespace BarcodeProject_WPF
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ShowSettingPopup();
+        }
+
+        private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
+        {
+            
         }
     }
 }

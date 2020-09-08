@@ -22,6 +22,7 @@ namespace BarcodeProject_WPF
     /// </summary>
     public partial class SelectDevicePopupWindow : Window
     {
+        private string _deviceName;
         private readonly RawInput _rawinput;
         const bool CaptureOnlyInForeground = true;
 
@@ -44,14 +45,33 @@ namespace BarcodeProject_WPF
             {
                 if (Win32.GetDeviceType(devices[item].DeviceType) != DeviceType.RimTypekeyboard) continue;
 
-                table.Rows.Add(new string[] { devices[item].DeviceType, devices[item].DeviceName, "" });
+                table.Rows.Add(new string[] { devices[item].DeviceType, devices[item].DeviceName, devices[item].ToString() });
             }
 
-            DeviceGrid.ItemsSource = table.DefaultView;
+            DeviceGrid.ItemsSource = table.DefaultView;            
         }
 
         private void DeviceGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (sender != null)
+            {
+                DataGrid grid = sender as DataGrid;
+                if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                {
+                    //This is the code which helps to show the data when the row is double clicked.
+                    DataGridRow dgr = grid.ItemContainerGenerator.ContainerFromItem(grid.SelectedItem) as DataGridRow;
+                    DataRowView dr = (DataRowView)dgr.Item;
+
+                    _deviceName = dr[1].ToString();
+                    this.DialogResult = true;
+                    
+                }
+            }
+            else
+            {
+                this.DialogResult = false;
+            }
+            this.Close();
         }
 
         private static void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e)
@@ -65,6 +85,11 @@ namespace BarcodeProject_WPF
             Debug.WriteLine("Unhandled Exception: " + ex.Message);
             Debug.WriteLine("Unhandled Exception: " + ex);
             MessageBox.Show(ex.Message);
+        }
+
+        public string DeviceName
+        {
+            get { return _deviceName; }
         }
     }
 }

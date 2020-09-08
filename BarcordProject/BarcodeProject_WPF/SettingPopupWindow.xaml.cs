@@ -42,7 +42,7 @@ namespace BarcodeProject_WPF
             {
                 for (int i = 1; i <= 4; i++)
                 {
-                    TextBox control = (TextBox)this.FindName(string.Format("{0}{1}", controlName, i + 1));
+                    TextBox control = (TextBox)this.FindName(string.Format("{0}{1}", controlName, i));
                     values += control.Text;
                     if(i != 4)
                         values += separator;
@@ -61,11 +61,11 @@ namespace BarcodeProject_WPF
         {
             TextBox control = (TextBox)sender;
 
-            SelectDevicePopupWindow settingPopup = new SelectDevicePopupWindow();
-            settingPopup.ShowDialog();
-            if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
+            SelectDevicePopupWindow popup = new SelectDevicePopupWindow();
+            popup.ShowDialog();
+            if (popup.DialogResult.HasValue && popup.DialogResult.Value)
             {
-                
+                control.Text = popup.DeviceName;
             }
         }
     }
