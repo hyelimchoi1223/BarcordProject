@@ -1,4 +1,5 @@
-﻿using RawInput_dll;
+﻿using CIMON_Helper;
+using RawInput_dll;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -143,7 +144,11 @@ namespace BarcodeProject_WPF
 
         private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            if(e.Key == Key.Enter)
+            {
+                CimonXClass cimon = new CimonXClass();
+                cimon.GetTagVal("");
+            }
         }
     }
 }

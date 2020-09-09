@@ -111,6 +111,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CIMON_Helper\CIMON_Helper.csproj">
+      <Project>{bc699e6d-12c9-4ce4-bd0c-b417b0390336}</Project>
+      <Name>CIMON_Helper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\RawInput\RawInput.csproj">
       <Project>{4143d085-38cf-4640-bb05-2fdffaf94d76}</Project>
       <Name>RawInput</Name>
