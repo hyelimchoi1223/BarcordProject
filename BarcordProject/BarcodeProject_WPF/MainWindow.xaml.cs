@@ -30,12 +30,11 @@ namespace BarcodeProject_WPF
         const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
         const string TagValueLabelName = "TagName_Label";
 
+        public const int TagCount = 5;
 
         public MainWindow()
         {
             InitializeComponent();
-
-            
         }
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -64,11 +63,44 @@ namespace BarcodeProject_WPF
             base.OnSourceInitialized(e);
         }
 
+        /// <summary>
+        /// Custom KeyDown Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnKeyPressed(object sender, RawInputEventArg e)
         {
             int controlIndex = GetLabelIndex(e.KeyPressEvent.DeviceName);
             if (controlIndex == -1) throw new Exception("이 장비는 등록된 장비가 아닙니다.");
             FocusTextBox(controlIndex);            
+        }
+
+        public void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.SystemPath = App.cmx.SystemPath;
+            Properties.Settings.Default.CurrentProjectPath = App.cmx.CurrentProjectPath;
+            Properties.Settings.Default.CurrentProjectName = App.cmx.CurrentProjectName;
+            Properties.Settings.Default.Save();
+
+            if (!GetSettingInitialize())
+                ShowSettingPopup();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ShowSettingPopup();
+        }
+
+        private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox test = (TextBox)sender;
+            if (e.Key == Key.Enter)
+            {
+                string tagIndex = test.Name.Replace(BarcodeValueTextBoxName, "");
+                Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
+                //CimonXClass cimon = new CimonXClass();
+                App.cmx.SetTagVal(control.Content.ToString(), test.Text);
+            }
         }
 
         private void FocusTextBox(int controlIndex)
@@ -79,7 +111,7 @@ namespace BarcodeProject_WPF
 
         private int GetLabelIndex(string deviceName)
         {
-            for (int i = 1; i <= 4; i++)
+            for (int i = 1; i <= TagCount; i++)
             {
                 Label control = (Label)this.FindName(string.Format("{0}{1}", DeviceLabelName, i));
                 if (control.Content.Equals(deviceName))
@@ -94,8 +126,6 @@ namespace BarcodeProject_WPF
 
             if (null == ex) return;
 
-            // Log this error. Logging the exception doesn't correct the problem but at least now
-            // you may have more insight as to why the exception is being thrown.
             Debug.WriteLine("Unhandled Exception: " + ex.Message);
             Debug.WriteLine("Unhandled Exception: " + ex);
             MessageBox.Show(ex.Message);
@@ -135,35 +165,6 @@ namespace BarcodeProject_WPF
                     control.Content = values[i];
                 }
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ShowSettingPopup();
-        }
-
-        private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
-        {
-            TextBox test = (TextBox)sender;
-            if(e.Key == Key.Enter)
-            {
-                string tagIndex = test.Name.Replace(BarcodeValueTextBoxName, "");
-                Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
-                CimonXClass cimon = new CimonXClass();
-                //GTValue = cimon.GetTagVal("BAR1");
-                cimon.SetTagVal(control.Content.ToString(), test.Text);
-            }
-        }
-
-        public void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Properties.Settings.Default.SystemPath = App.cmx.SystemPath;
-            Properties.Settings.Default.CurrentProjectPath = App.cmx.CurrentProjectPath;
-            Properties.Settings.Default.CurrentProjectName = App.cmx.CurrentProjectName;
-            Properties.Settings.Default.Save();
-
-            if (!GetSettingInitialize())
-                ShowSettingPopup();
-        }
+        }        
     }
 }

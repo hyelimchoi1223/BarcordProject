@@ -18,8 +18,7 @@ namespace BarcodeProject_WPF
     /// SettingPopupForm.xaml에 대한 상호 작용 논리
     /// </summary>
     public partial class SettingPopupWindow : Window
-    {
-        public string test { get; set; }
+    {        
         public SettingPopupWindow()
         {
             InitializeComponent();
@@ -40,11 +39,11 @@ namespace BarcodeProject_WPF
             char separator = Properties.Settings.Default.Separator;
             if (type == typeof(TextBox))
             {
-                for (int i = 1; i <= 4; i++)
+                for (int i = 1; i <= MainWindow.TagCount; i++)
                 {
                     TextBox control = (TextBox)this.FindName(string.Format("{0}{1}", controlName, i));
                     values += control.Text;
-                    if(i != 4)
+                    if(i != MainWindow.TagCount)
                         values += separator;
                 }
             }
