@@ -11,5 +11,14 @@
     <Setting Name="Separator" Type="System.Char" Scope="User">
       <Value Profile="(Default)">,</Value>
     </Setting>
+    <Setting Name="SystemPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CurrentProjectPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CurrentProjectName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

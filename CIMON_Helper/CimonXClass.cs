@@ -8,7 +8,8 @@ namespace CIMON_Helper
     public class CimonXClass : IFunction
     {
         public string progID;
-        object bird;
+        public static object bird;
+
 
         //--------------//
         // 생성자 구현  //
@@ -19,52 +20,7 @@ namespace CIMON_Helper
 
         }
 
-        public bool CimonXConnection()
-        {
-            // 정상 연결이 된 경우
-            if (bird != null && isCimonXRun()) return true;
-
-            // CimonX가 중간에 종료된 경우
-            if (bird != null && !isCimonXRun())
-            {
-                Marshal.ReleaseComObject(bird);
-                bird = null;
-
-                //Program.fmd.frmMainDlg_Load(this, null);
-                return false;
-            }
-
-            // 초기 OLE 연결 설정
-            if (bird == null && isCimonXRun())
-            {
-                progID = "CimonX.Document";
-
-                var type = Type.GetTypeFromProgID(progID);
-                if (type == null)
-                {
-                    throw new Exception("Invalid ProgID.");
-                }
-
-                var obj = Activator.CreateInstance(type);
-                IntPtr pIUnk = Marshal.GetIUnknownForObject(obj);
-                IntPtr ppv;
-                Guid IID_IDispatch = new Guid("{00020400-0000-0000-C000-000000000046}");
-                Int32 result = Marshal.QueryInterface(pIUnk, ref IID_IDispatch, out ppv);
-                if (result < 0)
-                { throw new Exception("Invalid QueryInterface."); }
-                else
-                {
-                    bird = Marshal.GetObjectForIUnknown(ppv);
-                }
-
-                //Program.fmd.frmMainDlg_Load(this, null);
-
-                return false;
-            }
-
-            bird = null;
-            return false;
-        }
+        
 
         //-----------------------//
         // 인터페이스 함수 구현  //

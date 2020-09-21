@@ -28,16 +28,15 @@ namespace BarcodeProject_WPF
         const bool CaptureOnlyInForeground = true;
         const string DeviceLabelName = "DeviceName_Label";
         const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
+        const string TagValueLabelName = "TagName_Label";
 
 
         public MainWindow()
         {
-            InitializeComponent();            
-          
-            if (!GetSettingInitialize())
-                ShowSettingPopup();
-        }
+            InitializeComponent();
 
+            
+        }
         protected override void OnSourceInitialized(EventArgs e)
         {
             // I am new to WPF and I don't know where else to call this function.
@@ -122,6 +121,7 @@ namespace BarcodeProject_WPF
             SetControlValueBinding(typeof(Label), "DeviceName_Label", devices);
             List<string> tags = Properties.Settings.Default.TagName.Split(separator).ToList();
             SetControlValueBinding(typeof(Label), "TagName_Label", tags);
+
             return true;
         }
 
@@ -144,11 +144,26 @@ namespace BarcodeProject_WPF
 
         private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
         {
+            TextBox test = (TextBox)sender;
             if(e.Key == Key.Enter)
             {
+                string tagIndex = test.Name.Replace(BarcodeValueTextBoxName, "");
+                Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
                 CimonXClass cimon = new CimonXClass();
-                cimon.GetTagVal("");
+                //GTValue = cimon.GetTagVal("BAR1");
+                cimon.SetTagVal(control.Content.ToString(), test.Text);
             }
+        }
+
+        public void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.SystemPath = App.cmx.SystemPath;
+            Properties.Settings.Default.CurrentProjectPath = App.cmx.CurrentProjectPath;
+            Properties.Settings.Default.CurrentProjectName = App.cmx.CurrentProjectName;
+            Properties.Settings.Default.Save();
+
+            if (!GetSettingInitialize())
+                ShowSettingPopup();
         }
     }
 }
