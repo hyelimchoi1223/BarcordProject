@@ -35,6 +35,9 @@ namespace BarcodeProject_WPF
         public MainWindow()
         {
             InitializeComponent();
+
+            if (!GetSettingInitialize())
+                ShowSettingPopup();
         }
         protected override void OnSourceInitialized(EventArgs e)
         {
