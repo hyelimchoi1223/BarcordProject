@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BarcodeProject_WPF.Properties {
+namespace BarcordProject.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -44,54 +44,6 @@ namespace BarcodeProject_WPF.Properties {
             }
             set {
                 this["TagName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(",")]
-        public char Separator {
-            get {
-                return ((char)(this["Separator"]));
-            }
-            set {
-                this["Separator"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SystemPath {
-            get {
-                return ((string)(this["SystemPath"]));
-            }
-            set {
-                this["SystemPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentProjectPath {
-            get {
-                return ((string)(this["CurrentProjectPath"]));
-            }
-            set {
-                this["CurrentProjectPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentProjectName {
-            get {
-                return ((string)(this["CurrentProjectName"]));
-            }
-            set {
-                this["CurrentProjectName"] = value;
             }
         }
     }
