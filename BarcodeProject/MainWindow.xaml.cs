@@ -1,4 +1,5 @@
 ﻿using CIMON_Helper;
+using RawInput_dll;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -33,6 +35,8 @@ namespace BarcodeProject
         const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
         const string TagValueLabelName = "TagName_Label";
 
+        private RawInput _rawinput;
+
         Thread _checkProcess;
         bool _isStopThread = false;
 
@@ -50,6 +54,10 @@ namespace BarcodeProject
                 MessageBox.Show("BarcordProject is running", "Warning", MessageBoxButton.OK);
                 Application.Current.Shutdown();
             }
+
+            if (!GetSettingInitialize())
+                ShowSettingPopup();
+
             this._checkProcess = new Thread(CheckProcess);
             this._checkProcess.IsBackground = true;
             this._checkProcess.Start();
@@ -60,7 +68,7 @@ namespace BarcodeProject
             while (!this._isStopThread)
             {
                 Thread.Sleep(200);
-                Process[] viewProcess = Process.GetProcessesByName("GitHubDesktop"); // 프로세스이름 수정해야함.
+                Process[] viewProcess = Process.GetProcessesByName("CimonX"); // 프로세스이름 수정해야함.
                 if (viewProcess != null && viewProcess.Length >= 1)
                 {
                     CimonXConnection();
@@ -129,6 +137,26 @@ namespace BarcodeProject
             if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
             {
                 GetSettingInitialize();
+
+                IntPtr hwnd = IntPtr.Zero;
+                Window myWin = Application.Current.MainWindow;
+                try
+                {
+                    hwnd = new WindowInteropHelper(myWin).Handle;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Initialized Exception: " + ex.Message);
+                }
+
+                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+                _rawinput = new RawInput(hwnd, CaptureOnlyInForeground);
+                _rawinput.AddMessageFilter();   // Adding a message filter will cause keypresses to be handled
+                Win32.DeviceAudit();
+
+                _rawinput.KeyPressed += OnKeyPressed;
+
             }
         }
         private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
@@ -142,6 +170,15 @@ namespace BarcodeProject
             }
         }
 
+        private void ShowSettingPopup()
+        {
+            SettingPopupWindow settingPopup = new SettingPopupWindow();
+            settingPopup.ShowDialog();
+            if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
+            {
+                GetSettingInitialize();
+            }
+        }
         private bool GetSettingInitialize()
         {
             if (string.IsNullOrWhiteSpace(Properties.Settings.Default.DeviceName) || string.IsNullOrWhiteSpace(Properties.Settings.Default.TagName))
@@ -155,7 +192,17 @@ namespace BarcodeProject
 
             return true;
         }
-         private void SetControlValueBinding(Type type, string controlName, List<string> values)
+        private int GetLabelIndex(string deviceName)
+        {
+            for (int i = 1; i <= TagCount; i++)
+            {
+                Label control = (Label)this.FindName(string.Format("{0}{1}", DeviceLabelName, i));
+                if (control.Content.Equals(deviceName))
+                    return i;
+            }
+            return -1;
+        }
+        private void SetControlValueBinding(Type type, string controlName, List<string> values)
         {
             if (type == typeof(Label))
             {
@@ -165,6 +212,62 @@ namespace BarcodeProject
                     control.Content = values[i];
                 }
             }
-        }        
+        }
+        private void FocusTextBox(int controlIndex)
+        {
+            TextBox real = (TextBox)this.FindName(string.Format("{0}{1}", BarcodeValueTextBoxName, controlIndex));
+            real.Focus();
+        }
+        
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            // I am new to WPF and I don't know where else to call this function.
+            // It has to be called after the window is created or the handle won't
+            // exist yet and the function will throw an exception.
+            IntPtr hwnd = IntPtr.Zero;
+            Window myWin = Application.Current.MainWindow;
+            try
+            {
+                hwnd = new WindowInteropHelper(myWin).Handle;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Initialized Exception: " + ex.Message);
+            }
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            _rawinput = new RawInput(hwnd, CaptureOnlyInForeground);
+            _rawinput.AddMessageFilter();   // Adding a message filter will cause keypresses to be handled
+            Win32.DeviceAudit();
+
+            _rawinput.KeyPressed += OnKeyPressed;
+
+            base.OnSourceInitialized(e);
+        }
+
+        /// <summary>
+        /// Custom KeyDown Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnKeyPressed(object sender, RawInputEventArg e)
+        {
+            int controlIndex = GetLabelIndex(e.KeyPressEvent.DeviceName);
+            if (controlIndex != -1)
+                FocusTextBox(controlIndex);
+        }
+
+        private static void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+
+            if (null == ex) return;
+
+            Debug.WriteLine("Unhandled Exception: " + ex.Message);
+            Debug.WriteLine("Unhandled Exception: " + ex);
+            MessageBox.Show(ex.Message);
+        }
     }
 }
