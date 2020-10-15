@@ -167,6 +167,7 @@ namespace BarcodeProject
                 string tagIndex = textBox.Name.Replace(BarcodeValueTextBoxName, "");
                 Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
                 cmx.SetTagVal(control.Content.ToString(), textBox.Text);
+                cmx.SetTagVal(string.Format("{0}_D",control.Content.ToString()), "1");
             }
         }
 
@@ -268,6 +269,24 @@ namespace BarcodeProject
             Debug.WriteLine("Unhandled Exception: " + ex.Message);
             Debug.WriteLine("Unhandled Exception: " + ex);
             MessageBox.Show(ex.Message);
+        }
+
+        private void BarcodeValue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            string tagIndex = textBox.Name.Replace(BarcodeValueTextBoxName, "");
+            Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
+
+            object objTagValue = cmx.GetTagVal(control.Content.ToString());
+            string tagValue = string.Empty;
+            if (objTagValue != null)
+                tagValue = objTagValue.ToString();
+
+            if (!string.IsNullOrEmpty(tagValue))
+            {
+                cmx.SetTagVal(control.Content.ToString(), string.Empty);
+                textBox.Text = string.Empty;
+            }
         }
     }
 }
