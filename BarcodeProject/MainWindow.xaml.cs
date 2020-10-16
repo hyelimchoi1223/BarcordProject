@@ -167,7 +167,7 @@ namespace BarcodeProject
                 string tagIndex = textBox.Name.Replace(BarcodeValueTextBoxName, "");
                 Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
                 cmx.SetTagVal(control.Content.ToString(), textBox.Text);
-                cmx.SetTagVal(string.Format("{0}_D",control.Content.ToString()), "1");
+                cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "1");
             }
         }
 
@@ -219,7 +219,7 @@ namespace BarcodeProject
             TextBox real = (TextBox)this.FindName(string.Format("{0}{1}", BarcodeValueTextBoxName, controlIndex));
             real.Focus();
         }
-        
+
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -282,11 +282,10 @@ namespace BarcodeProject
             if (objTagValue != null)
                 tagValue = objTagValue.ToString();
 
-            if (!string.IsNullOrEmpty(tagValue))
-            {
-                cmx.SetTagVal(control.Content.ToString(), string.Empty);
-                textBox.Text = string.Empty;
-            }
+            if (string.IsNullOrEmpty(tagValue)) return;
+            cmx.SetTagVal(control.Content.ToString(), string.Empty);
+            cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "0");
+            textBox.Text = string.Empty;
         }
     }
 }

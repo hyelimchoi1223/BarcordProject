@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace BarcodeProject
 {
@@ -39,6 +40,46 @@ namespace BarcodeProject
             }
 
             DeviceGrid.ItemsSource = table.DefaultView;
+        }
+
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            // I am new to WPF and I don't know where else to call this function.
+            // It has to be called after the window is created or the handle won't
+            // exist yet and the function will throw an exception.
+            IntPtr hwnd = IntPtr.Zero;
+            Window myWin = Application.Current.MainWindow;
+            try
+            {
+                hwnd = new WindowInteropHelper(myWin).Handle;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Initialized Exception: " + ex.Message);
+            }
+
+            _rawinput.KeyPressed += OnKeyPressed;
+
+            base.OnSourceInitialized(e);
+        }
+
+        /// <summary>
+        /// Custom KeyDown Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnKeyPressed(object sender, RawInputEventArg e)
+        {
+            if (DeviceGrid.ItemsSource is DataView)
+            {
+                foreach (DataRowView dataRow in (DataView)DeviceGrid.ItemsSource)
+                    if (dataRow["DeviceName"].ToString() == e.KeyPressEvent.DeviceName)
+                    {
+                        // This is the data row view record you want...
+                        DeviceGrid.SelectedItem = dataRow;
+                    }
+            }  
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

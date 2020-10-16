@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="SelectDevicePopupWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid x:Name="DeviceGrid" Margin="10,10,9.6,10.4" MouseDoubleClick="DeviceGrid_MouseDoubleClick">
+        <DataGrid x:Name="DeviceGrid" Margin="10,10,9.6,10" MouseDoubleClick="DeviceGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="DeviceType" Binding="{Binding Path=DeviceType}"/>
                 <DataGridTextColumn Header="DeviceName" Binding="{Binding Path=DeviceName}"/>
