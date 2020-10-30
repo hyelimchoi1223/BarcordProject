@@ -6,20 +6,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace BarcodeProject
 {
@@ -30,7 +20,7 @@ namespace BarcodeProject
     {
         public const int TagCount = 5;
 
-        const bool CaptureOnlyInForeground = true;
+        const bool CaptureOnlyInForeground = false;
         const string DeviceLabelName = "DeviceName_Label";
         const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
         const string TagValueLabelName = "TagName_Label";
@@ -137,37 +127,8 @@ namespace BarcodeProject
             if (settingPopup.DialogResult.HasValue && settingPopup.DialogResult.Value)
             {
                 GetSettingInitialize();
-
-                IntPtr hwnd = IntPtr.Zero;
-                Window myWin = Application.Current.MainWindow;
-                try
-                {
-                    hwnd = new WindowInteropHelper(myWin).Handle;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Initialized Exception: " + ex.Message);
-                }
-
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-                _rawinput = new RawInput(hwnd, CaptureOnlyInForeground);
-                _rawinput.AddMessageFilter();   // Adding a message filter will cause keypresses to be handled
-                Win32.DeviceAudit();
-
-                _rawinput.KeyPressed += OnKeyPressed;
-
-            }
-        }
-        private void BarcodeValue_KeyDown(object sender, KeyEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            if (e.Key == Key.Enter)
-            {
-                string tagIndex = textBox.Name.Replace(BarcodeValueTextBoxName, "");
-                Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
-                cmx.SetTagVal(control.Content.ToString(), textBox.Text);
-                cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "1");
+                System.Windows.Forms.Application.Restart();
+                System.Windows.Application.Current.Shutdown();
             }
         }
 
@@ -214,11 +175,6 @@ namespace BarcodeProject
                 }
             }
         }
-        private void FocusTextBox(int controlIndex)
-        {
-            TextBox real = (TextBox)this.FindName(string.Format("{0}{1}", BarcodeValueTextBoxName, controlIndex));
-            real.Focus();
-        }
 
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -244,10 +200,10 @@ namespace BarcodeProject
             Win32.DeviceAudit();
 
             _rawinput.KeyPressed += OnKeyPressed;
-
+            keyNames.Clear();
             base.OnSourceInitialized(e);
         }
-
+        List<string> keyNames = new List<string>();
         /// <summary>
         /// Custom KeyDown Event
         /// </summary>
@@ -257,7 +213,32 @@ namespace BarcodeProject
         {
             int controlIndex = GetLabelIndex(e.KeyPressEvent.DeviceName);
             if (controlIndex != -1)
-                FocusTextBox(controlIndex);
+            {
+                int result = -1;
+                if(e.KeyPressEvent.VKeyName != "ENTER" && int.TryParse(e.KeyPressEvent.VKeyName.Replace("D", ""), out result))
+                {
+                    Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, controlIndex));
+                    cmx.SetTagVal(control.Content.ToString(), string.Empty);
+                    cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "0");
+                    keyNames.Add(result.ToString());
+                }
+                if (e.KeyPressEvent.VKeyName == "ENTER" && keyNames.Count != 0)
+                {
+                    for(int i = 0;i < keyNames.Count;i++)
+                    {
+                        if(i%2==0)
+                        {
+                            keyNames.RemoveAt(i);
+                        }
+                    }
+
+                    Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, controlIndex));
+                    cmx.SetTagVal(control.Content.ToString(), String.Join("", keyNames.ToArray()));
+                    cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "1");
+
+                    keyNames.Clear();
+                }
+            }
         }
 
         private static void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs e)
@@ -269,23 +250,6 @@ namespace BarcodeProject
             Debug.WriteLine("Unhandled Exception: " + ex.Message);
             Debug.WriteLine("Unhandled Exception: " + ex);
             MessageBox.Show(ex.Message);
-        }
-
-        private void BarcodeValue_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            string tagIndex = textBox.Name.Replace(BarcodeValueTextBoxName, "");
-            Label control = (Label)this.FindName(string.Format("{0}{1}", TagValueLabelName, tagIndex));
-
-            object objTagValue = cmx.GetTagVal(control.Content.ToString());
-            string tagValue = string.Empty;
-            if (objTagValue != null)
-                tagValue = objTagValue.ToString();
-
-            if (string.IsNullOrEmpty(tagValue)) return;
-            cmx.SetTagVal(control.Content.ToString(), string.Empty);
-            cmx.SetTagVal(string.Format("{0}_D", control.Content.ToString()), "0");
-            textBox.Text = string.Empty;
         }
     }
 }
