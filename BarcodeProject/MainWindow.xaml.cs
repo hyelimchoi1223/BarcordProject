@@ -22,7 +22,6 @@ namespace BarcodeProject
 
         const bool CaptureOnlyInForeground = false;
         const string DeviceLabelName = "DeviceName_Label";
-        const string BarcodeValueTextBoxName = "BarcodeValue_TextBox";
         const string TagValueLabelName = "TagName_Label";
 
         private RawInput _rawinput;
